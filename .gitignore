@@ -1,0 +1,6 @@
+venv/
+.vscode/
+__pycache__/
+*.json
+uk_property_base/
+scrapy.cfg
