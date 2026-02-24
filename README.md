@@ -1,5 +1,19 @@
 # 🏠 UK Real Estate Scraper (Technical Challenge)
 
+<p align="center">
+
+  <!-- Core Language -->
+  <img src="https://img.shields.io/badge/Python-3776AB?style=for-the-badge&logo=python&logoColor=white" />
+
+  <!-- Web Scraping & Automation -->
+  <img src="https://img.shields.io/badge/Selenium-43B02A?style=for-the-badge&logo=selenium&logoColor=white" />
+  <img src="https://img.shields.io/badge/BeautifulSoup-4B8BBE?style=for-the-badge&logo=python&logoColor=white" />
+
+  <!-- Data Validation -->
+  <img src="https://img.shields.io/badge/Pydantic-E92063?style=for-the-badge&logo=pydantic&logoColor=white" />
+
+</p>
+
 ## 🎯 Project Overview
 A specialized web scraping tool built to extract property data from highly secured UK real estate platforms. This project was a deep dive into bypassing modern anti-bot measures and handling dynamic JavaScript rendering using browser automation.
 
