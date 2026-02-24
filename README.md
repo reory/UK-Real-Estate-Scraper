@@ -145,6 +145,8 @@ Since this project was a Proof of Concept (PoC), there are several areas for gro
 * **Data Cleaning**: Implementing Pydantic models to cast prices as integers and validate addresses.
 * **Headless Mode**: Optimizing the Selenium configuration to run without a visible browser window.
 * **Proxy Integration**: Adding rotating proxies to further reduce the risk of IP rate-limiting.
+* **Integration**: Adding Playwright - behaves like a real user and can scrap more
+effectively.
 
 ---
 
