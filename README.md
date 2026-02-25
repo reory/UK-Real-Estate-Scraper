@@ -144,8 +144,8 @@ If you have a suggestion that would make this better, please fork the repo and c
 5. **Open a Pull Request**
 
 ---
-<deatails>
-<summary>📢 Potential Improvements</summary>
+<details>
+  <summary>📢 Potential Improvements</summary>
 
 Since this project was a Proof of Concept (PoC), there are several areas for growth:
 * **Pagination Logic**: Automating the "Next" button click to crawl multiple pages.
@@ -159,14 +159,17 @@ effectively.
 
 ---
 
-## 💖 Acknowledgments
+<details>
+  <summary>💖 Acknowledgments</summary>
 
 * **Future Contributors**: A huge thank you in advance to anyone who forks this repo. Your insights help turn small scripts into robust tools.
 * **The Real Estate Tech Community**: Gratitude for the documentation and forums that help navigate the complex landscape of property data.
 * **Open Source Community**: For providing powerful tools like Selenium and BeautifulSoup that make "cracking" these challenges possible.
 
+</details>
+
 ---
 
-*Note: This project was built for educational purposes to demonstrate advanced web automation techniques. Respect robots.txt and stay ethical!* ✌️
+* **NOTE**: This project was built for educational purposes to demonstrate advanced web automation techniques. Respect robots.txt and stay ethical!* ✌️
 
 **Built By Roy Peters** [Click here for contact details 😁](https://www.linkedin.com/in/roy-p-74980b382/)
