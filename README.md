@@ -23,8 +23,12 @@ A specialized web scraping tool built to extract property data from highly secur
 * **Parsing:** BeautifulSoup4 (lxml)
 * **Environment:** Virtual Environments (venv)
 
-## 🚀 The Journey: Overcoming Technical Hurdles
-This project was significantly more challenging than standard scraping tasks due to the target's security layers.
+---
+
+<details>
+  <summary>🚀 The Journey: Overcoming Technical Hurdles</summary>
+  
+This project was significantly more challenging than any other standard scraping tasks due to the target's security layers. It was rewarding to finally get some data.
 
 ### The Scrapy vs. JS Wall
 Initially attempted using **Scrapy**, which failed to capture data because the property listings were injected via Asynchronous JavaScript. The site returned a 200 OK but with a nearly empty HTML body (4KB).
@@ -52,6 +56,8 @@ The scraper successfully extracted property titles and pricing into a structured
     }
 ]
 ```
+
+</details>
 
 ---
 
@@ -138,8 +144,9 @@ If you have a suggestion that would make this better, please fork the repo and c
 5. **Open a Pull Request**
 
 ---
+<deatails>
+<summary>📢 Potential Improvements</summary>
 
-### 📢 Potential Improvements
 Since this project was a Proof of Concept (PoC), there are several areas for growth:
 * **Pagination Logic**: Automating the "Next" button click to crawl multiple pages.
 * **Data Cleaning**: Implementing Pydantic models to cast prices as integers and validate addresses.
@@ -147,6 +154,8 @@ Since this project was a Proof of Concept (PoC), there are several areas for gro
 * **Proxy Integration**: Adding rotating proxies to further reduce the risk of IP rate-limiting.
 * **Integration**: Adding Playwright - behaves like a real user and can scrape more
 effectively.
+
+</details>
 
 ---
 
@@ -157,6 +166,7 @@ effectively.
 * **Open Source Community**: For providing powerful tools like Selenium and BeautifulSoup that make "cracking" these challenges possible.
 
 ---
+
 *Note: This project was built for educational purposes to demonstrate advanced web automation techniques. Respect robots.txt and stay ethical!* ✌️
 
 **Built By Roy Peters** [Click here for contact details 😁](https://www.linkedin.com/in/roy-p-74980b382/)
