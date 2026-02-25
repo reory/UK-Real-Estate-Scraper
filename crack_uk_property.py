@@ -31,7 +31,7 @@ try:
     # CLICK THE COOKIE BANNER (The "Accept All" button)
     print("🍪 Attempting to clear cookie banner...")
     try:
-        # This looks for the red button you see in your screenshot
+        # This looks for the red button you see in the screenshot
         wait = WebDriverWait(driver, 10)
         accept_btn = wait.until(EC.element_to_be_clickable((By.XPATH, "//button[contains(text(), 'ACCEPT ALL')]")))
         accept_btn.click()
@@ -48,11 +48,11 @@ try:
     # GRAB AND PARSE
     soup = BeautifulSoup(driver.page_source, 'lxml')
     
-    # Based on your screenshot, target the text directly
+    # Based on screenshot, target the text directly
     results = []
     
     # Find all property containers
-    # In your screenshot, houses have titles like 'Church Gate' and prices next to them
+    # In screenshot, houses have titles like 'Church Gate' and prices next to them
     properties = soup.find_all('div', class_='property-res') or soup.find_all('div', class_='property-item')
     
     if not properties:
