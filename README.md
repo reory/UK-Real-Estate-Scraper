@@ -1,8 +1,8 @@
 # 🏠 UK Real Estate Scraper (Technical Challenge)
 
 ![License](https://img.shields.io/badge/License-MIT-green)
-![Repo Size](https://img.shields.io/github/repo-size/reory/Health-Tracker-App?cacheSeconds=60)
-![Last Commit](https://img.shields.io/github/last-commit/reory/Health-Tracker-App?cacheSeconds=60)
+![Repo Size](https://img.shields.io/github/repo-size/reory/UK-Real-Estate-Scraper?cacheSeconds=60)
+![Last Commit](https://img.shields.io/github/last-commit/reory/UK-Real-Estate-Scraper?cacheSeconds=60)
 
 <p align="center">
 
