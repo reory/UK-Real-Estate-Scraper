@@ -131,7 +131,6 @@ Managing Python virtual environments and interpreter paths in VS Code
 * **Selenium & WebDriver-Manager**: Leveraged for browser automation to handle dynamic DOM updates and JavaScript execution.
 * **BeautifulSoup4 (lxml)**: Utilized for high-speed parsing of rendered HTML strings.
 * **Pydantic Models**: (Planned/Implemented) For strict data typing and validation of scraped property objects.
-* **Loguru/Logging**: For real-time monitoring of scraper health and error tracking.
 
 ---
 
