@@ -52,17 +52,18 @@ Handled complex cookie consent banners that visually obstructed the data layer, 
 ## 📊 Data Output
 The scraper successfully extracted property titles and pricing into a structured CSV format: Below is one of them.
 
-Property ID,Location or Title,Price
-Property 01,"Fenton Place, Middleton, LS10 4FH","£135,000"
-Property 02,"Claremont Terrace, Leeds, LS12 3EB","£140,000"
-Property 03,"The Oval, Leeds, LS14 6AZ","£230,000"
-Property 04,"Prospect Terrace, Farsley, LS28 5ES","£200,000"
-Property 05,"Rochester Wynd, Leeds, LS17 8XU","£560,000"
-Property 06,"Kirkwood Close, Leeds, LS16 7EW","£250,000"
-Property 07,"Sandmoor Lane, Leeds, LS17 7EA","£1,800,000"
-Property 08,"Foundry Mill Gardens, Leeds, LS14 6RG","£250,000"
-Property 09,"Lanshaw Crescent, Leeds, LS10 3NN","£230,000"
-Property 10,"Heath Grove, Pudsey, LS28 8HP","£255,000"
+| Property ID | Location or Title | Price |
+| :--- | :--- | ---: |
+| Property 01 | Fenton Place, Middleton, LS10 4FH | £135,000 |
+| Property 02 | Claremont Terrace, Leeds, LS12 3EB | £140,000 |
+| Property 03 | The Oval, Leeds, LS14 6AZ | £230,000 |
+| Property 04 | Prospect Terrace, Farsley, LS28 5ES | £200,000 |
+| Property 05 | Rochester Wynd, Leeds, LS17 8XU | £560,000 |
+| Property 06 | Kirkwood Close, Leeds, LS16 7EW | £250,000 |
+| Property 07 | Sandmoor Lane, Leeds, LS17 7EA | £1,800,000 |
+| Property 08 | Foundry Mill Gardens, Leeds, LS14 6RG | £250,000 |
+| Property 09 | Lanshaw Crescent, Leeds, LS10 3NN | £230,000 |
+| Property 10 | Heath Grove, Pudsey, LS28 8HP | £255,000 |
 
 </details>
 
