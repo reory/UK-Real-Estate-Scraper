@@ -6,22 +6,26 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from webdriver_manager.chrome import ChromeDriverManager
 from bs4 import BeautifulSoup
-import json
 import time
+import csv
 
 # Setup Chrome Options
 chrome_options = Options()
 
 # Google chrome is needed to run this scraper!
-chrome_options.binary_location = r"C:\Program Files\Google\Chrome\Application\chrome.exe"
+chrome_options.binary_location = (
+    r"C:\Program Files\Google\Chrome\Application\chrome.exe"
+)
 
 # chrome_options.add_argument("--headless") # Run without a window showing
 chrome_options.add_argument("--disable-blink-features=AutomationControlled")
-chrome_options.add_argument("user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36")
+chrome_options.add_argument(
+    "user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
+)
 
 # Initialize the Robot
 service = Service(ChromeDriverManager().install())
-driver = webdriver.Chrome(service=service, options=chrome_options) #type: ignore
+driver = webdriver.Chrome(service=service, options=chrome_options)
 
 try:
     url = "https://manningstainton.co.uk/properties-for-sale/leeds"
@@ -31,68 +35,110 @@ try:
     # CLICK THE COOKIE BANNER (The "Accept All" button)
     print("🍪 Attempting to clear cookie banner...")
     try:
-        # This looks for the red button you see in the screenshot
-        wait = WebDriverWait(driver, 10)
-        accept_btn = wait.until(EC.element_to_be_clickable((By.XPATH, "//button[contains(text(), 'ACCEPT ALL')]")))
+        wait = WebDriverWait(driver, 5)
+        accept_btn = wait.until(
+            EC.element_to_be_clickable(
+                (By.XPATH, "//button[contains(text(), 'ACCEPT ALL')]")
+            )
+        )
         accept_btn.click()
-        #print("✅ Cookies accepted! Page cleared.")
-        time.sleep(2) # Let the banner fade out
-    except Exception as e:
-        print(f"ℹ️ Could not click cookie button, might be blocked: {e}")
+        print("✅ Cookies accepted! Page cleared.")
+        time.sleep(2)  # Let the banner fade out
+    except Exception:
+        print("ℹ️ Could not click cookie button, might be blocked or already cleared.")
 
     # WAIT AND SCROLL
-    time.sleep(5) 
-    driver.execute_script("window.scrollTo(0, 500);")
-    time.sleep(2)
+    print("⏳ Waiting for listings to load and scrolling down...")
+    time.sleep(5)
+    driver.execute_script("window.scrollTo(0, 800);")
+    time.sleep(3)
 
-    # GRAB AND PARSE
-    soup = BeautifulSoup(driver.page_source, 'lxml')
-    
-    # Based on screenshot, target the text directly
+    # Parse the current page source using BeautifulSoup
+    soup = BeautifulSoup(driver.page_source, "lxml")
+
     results = []
-    
-    # Find all property containers
-    # In screenshot, houses have titles like 'Church Gate' and prices next to them
-    properties = soup.find_all('div', class_='property-res') or soup.find_all('div', class_='property-item')
-    
-    if not properties:
-        #print("🔍 Searching for headers and prices by text...")
-        # Fallback: Find every H3 (titles) and look for prices nearby
-        for h3 in soup.find_all('h3'):
-            title = h3.get_text(strip=True)
-            # Find the price in the parent container
-            parent = h3.find_parent('div')
-            price_elem = (
-                parent.find(string=lambda s: '£' in str(s)) if parent else None)
-            
-            # Only proceed if price and title weere successfully extracted.
-            if title and price_elem:
-                results.append({
-                    "title": title, # Store the title
-                    "price": price_elem.strip() # Strip whitespace and store the price.
-                })
-    else:
-        for p in properties:
-            # These are the specific classes Manning Stainton uses
-            title = (
-                p.find(['h2', 'h3']).get_text(strip=True) #type:ignore
-                if p.find(['h2', 'h3']) 
-                else "N/A")
-            
-            price = (
-                p.find(class_='price').get_text(strip=True) #type:ignore
-                if p.find(class_='price') 
-                else "N/A")
-            
-            results.append({"title": title, "price": price})
+    seen_properties = set()
 
-    print(f"✅ Success! Found {len(results)} properties.")
+    print("🔍 Parsing page data using smart card-hunting extraction...")
 
-    # SAVE
-    with open('selenium_leeds_results.json', 'w') as f:
-        json.dump(results, f, indent=4)
-    #print("📂 Data saved to selenium_leeds_results.json")
+    # 💡 UPGRADED CARD-HUNTING LOGIC
+    # We find layout elements containing BOTH a price symbol and a West Yorkshire 
+    # region marker, while strictly avoiding filter dropdowns, forms, or navigation panels.
+    possible_cards = []
+    for candidate in soup.find_all(["div", "article", "li"]):
+        # Hard ignore structural frames, search bars, side filters, and menus
+        if candidate.find_parent(["form", "select", "option", "nav", "footer", "header", "script", "style"]):
+            continue
+        
+        text = candidate.get_text(separator=" ", strip=True)
+        # A valid property listing must show a price and look like a local address
+        if "£" in text and any(marker in text.upper() for marker in ["LEEDS", "PUDSEY", "MORLEY", "WORTLEY", "HORSFORTH", "LS", "WF", "BD"]):
+            possible_cards.append(candidate)
+
+    # Filter out overarching macro-containers to zero in on the precise listing cards
+    cards = []
+    for c in possible_cards:
+        has_child_card = False
+        for other in possible_cards:
+            if other is not c and other in c.descendants:
+                has_child_card = True
+                break
+        if not has_child_card:
+            cards.append(c)
+
+    # Extract clean information out of our matched property card boxes
+    for card in cards:
+        strings = [s.strip() for s in card.stripped_strings if s.strip()]
+        
+        # 1. Isolate the true listing price element
+        price_str = "N/A"
+        for s in strings:
+            if "£" in s and len(s) <= 15:
+                price_str = s
+                break
+                
+        # 2. Isolate the longest descriptive regional address line
+        location_candidates = []
+        for s in strings:
+            if any(marker in s.upper() for marker in ["LEEDS", "PUDSEY", "MORLEY", "WORTLEY", "HORSFORTH", "LS", "WF", "BD"]):
+                if "£" not in s and len(s) > 4 and "VIEW" not in s.upper() and "PROPERTY" not in s.upper():
+                    location_candidates.append(s)
+                    
+        if location_candidates:
+            # Grabbing the longest string ensures we get the full address line instead of an excerpt
+            location_str = max(location_candidates, key=len)
+        else:
+            # Safe text fallback array
+            non_price_strings = [s for s in strings if "£" not in s and len(s) > 4 and "PRICE" not in s.upper() and "VIEW" not in s.upper()]
+            location_str = non_price_strings[0] if non_price_strings else "N/A"
+
+        if price_str != "N/A" and location_str != "N/A":
+            # Fix duplicate string-stitching layers if elements double-rendered inside the HTML
+            half = len(location_str) // 2
+            if len(location_str) >= 4 and location_str[:half] == location_str[half:]:
+                location_str = location_str[:half]
+                
+            location_str = location_str.strip(". ,")
+            
+            # Deduplicate rows
+            prop_id = f"{location_str}-{price_str}"
+            if prop_id not in seen_properties:
+                results.append({"title": location_str, "price": price_str})
+                seen_properties.add(prop_id)
+
+    print(f"✅ Success! Found {len(results)} clean, valid property listings.")
+
+    # Save report to a CSV file
+    csv_file = "leeds_properties.csv"
+    with open(csv_file, "w", newline="", encoding="utf-8") as f:
+        writer = csv.writer(f)
+        writer.writerow(["Property ID", "Location or Title", "Price"])
+
+        for index, prop in enumerate(results, 1):
+            writer.writerow([f"Property {index:02d}", prop["title"], prop["price"]])
+
+    print(f"CSV file generated successfully: {csv_file}")
 
 finally:
-    time.sleep(5) # Wait a little for the website to load.
+    time.sleep(5)
     driver.quit()

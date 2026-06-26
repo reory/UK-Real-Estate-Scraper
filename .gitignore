@@ -4,3 +4,4 @@ __pycache__/
 *.json
 uk_property_base/
 scrapy.cfg
+leeds_properties.csv
