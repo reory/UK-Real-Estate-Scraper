@@ -1,6 +1,7 @@
 venv/
 .vscode/
 __pycache__/
+.ruff_cache
 *.json
 uk_property_base/
 scrapy.cfg
