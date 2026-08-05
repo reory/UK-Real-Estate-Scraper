@@ -1,13 +1,19 @@
-from selenium import webdriver
-from selenium.webdriver.chrome.service import Service
-from selenium.webdriver.chrome.options import Options
-from selenium.webdriver.common.by import By
-from selenium.webdriver.support.ui import WebDriverWait
-from selenium.webdriver.support import expected_conditions as EC
-from webdriver_manager.chrome import ChromeDriverManager
-from bs4 import BeautifulSoup
-import time
 import csv
+import time
+
+from bs4 import BeautifulSoup
+from selenium import webdriver
+from selenium.common.exceptions import (
+    ElementClickInterceptedException,
+    NoSuchElementException,
+    TimeoutException,
+)
+from selenium.webdriver.chrome.options import Options
+from selenium.webdriver.chrome.service import Service
+from selenium.webdriver.common.by import By
+from selenium.webdriver.support import expected_conditions as EC
+from selenium.webdriver.support.ui import WebDriverWait
+from webdriver_manager.chrome import ChromeDriverManager
 
 # Setup Chrome Options
 chrome_options = Options()
@@ -44,7 +50,7 @@ try:
         accept_btn.click()
         print("✅ Cookies accepted! Page cleared.")
         time.sleep(2)  # Let the banner fade out
-    except Exception:
+    except (NoSuchElementException, ElementClickInterceptedException, TimeoutException):
         print("ℹ️ Could not click cookie button, might be blocked or already cleared.")
 
     # WAIT AND SCROLL
@@ -67,12 +73,18 @@ try:
     possible_cards = []
     for candidate in soup.find_all(["div", "article", "li"]):
         # Hard ignore structural frames, search bars, side filters, and menus
-        if candidate.find_parent(["form", "select", "option", "nav", "footer", "header", "script", "style"]):
+        if candidate.find_parent([
+            "form", "select", "option", "nav", "footer", 
+            "header", "script", "style"
+        ]):
             continue
         
         text = candidate.get_text(separator=" ", strip=True)
         # A valid property listing must show a price and look like a local address
-        if "£" in text and any(marker in text.upper() for marker in ["LEEDS", "PUDSEY", "MORLEY", "WORTLEY", "HORSFORTH", "LS", "WF", "BD"]):
+        if "£" in text and any(marker in text.upper() for marker in [
+            "LEEDS", "PUDSEY", "MORLEY", "WORTLEY", "HORSFORTH",
+            "LS", "WF", "BD"
+        ]):
             possible_cards.append(candidate)
 
     # Filter out overarching macro-containers to zero in on the precise listing cards
@@ -100,9 +112,17 @@ try:
         # 2. Isolate the longest descriptive regional address line
         location_candidates = []
         for s in strings:
-            if any(marker in s.upper() for marker in ["LEEDS", "PUDSEY", "MORLEY", "WORTLEY", "HORSFORTH", "LS", "WF", "BD"]):
-                if "£" not in s and len(s) > 4 and "VIEW" not in s.upper() and "PROPERTY" not in s.upper():
-                    location_candidates.append(s)
+            if (
+                any(marker in s.upper() for marker in [
+                    "LEEDS", "PUDSEY", "MORLEY", 
+                    "WORTLEY", "HORSFORTH", "LS", "WF", "BD"
+                ])
+                and "£" not in s 
+                and len(s) > 4 
+                and "VIEW" not in s.upper() 
+                and "PROPERTY" not in s.upper()
+            ):
+                location_candidates.append(s)
                     
         if location_candidates:
             # Grabbing the longest string ensures we get the full address line instead of an excerpt
